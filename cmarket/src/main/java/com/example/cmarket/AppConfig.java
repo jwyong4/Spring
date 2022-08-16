@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration // 클래스 내부에 있는 bean 메서드 실행
-@ComponentScan //
+@ComponentScan // 이 위치의 하위 패키지들의 모든 bean 등록
 public class AppConfig {
     @Bean // 실행 후 생성된 객체들은 스프링 컨테이너에서 관리함
     public UserService userService() {
@@ -28,7 +28,5 @@ public class AppConfig {
         return new OrderServiceImpl(userRepository(), discountInfo());
     }
     @Bean
-    public DiscountInfo discountInfo() {
-        return new RateDiscountInfo();
-    }
+    public DiscountInfo discountInfo() { return new RateDiscountInfo(); }
 }
