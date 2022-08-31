@@ -37,16 +37,14 @@ public class OrderController {
     public ResponseEntity postOrder(@Valid @RequestBody OrderPostDto orderPostDto) {
         Order order =
                 orderService.createOrder(mapper.orderPostDtoToOrder(orderPostDto));
-        List<Coffee> coffees = coffeeService.findOrderedCoffees(order);
-        return new ResponseEntity<>(mapper.orderToOrderResponseDto(order, coffees),
+        return new ResponseEntity<>(mapper.orderToOrderResponseDto(coffeeService, order),
                 HttpStatus.CREATED);
     }
 
     @GetMapping("/{order-id}")
     public ResponseEntity getOrder(@PathVariable("order-id") @Positive long orderId) {
         Order order = orderService.findOrder(orderId);
-        List<Coffee> coffees = coffeeService.findOrderedCoffees(order);
-        return new ResponseEntity<>(mapper.orderToOrderResponseDto(order, coffees),
+        return new ResponseEntity<>(mapper.orderToOrderResponseDto(coffeeService, order),
                 HttpStatus.OK);
     }
 
@@ -55,13 +53,9 @@ public class OrderController {
         List<Order> orders = orderService.findOrders();
 
         List<OrderResponseDto> response =
-                orders
-                    .stream()
-                    .map(order -> {
-                        List<Coffee> coffees = coffeeService.findOrderedCoffees(order);
-                        return mapper.orderToOrderResponseDto(order, coffees);
-                    })
-                    .collect(Collectors.toList());
+                orders.stream()
+                        .map(order -> mapper.orderToOrderResponseDto(coffeeService, order))
+                        .collect(Collectors.toList());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
